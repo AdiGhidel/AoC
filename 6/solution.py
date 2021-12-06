@@ -1,7 +1,8 @@
 import threading 
+from collections import defaultdict
 lock = threading.Lock()
 temp_input = []
-
+perNo = defaultdict(int)
 
 def readInput():
     vals = []
@@ -13,44 +14,52 @@ def writeOutput(res):
     with open('output.txt', 'w') as writer:
         writer.write(str(res))
 
-def solve(cnt, t,input):
-    global result, temp_input
+def solve(cnt, input):
+    global result, temp_input, perNo
+    crt = input[0]
     for i in range(cnt):
-        # if t % 1000 == 0:
-        print(f"from thread{t}: step {i}")
         input = fixZeros(input)
         input = decrease(input)
-        # print(input)
     lock.acquire()
+    perNo[crt] = len(input)
     temp_input += input
     lock.release()
     
 def solvethreads(input):
-    threadPool = []
-    for i,el in enumerate(input):
-        t = threading.Thread(target=solve, args=(128, i, [el],))
-        threadPool += [t]
-        t.start()
-    for t in threadPool:
-        t.join()
-
     global temp_input
-    input= temp_input
-    temp_input = []
+
     threadPool = []
-    for i,el in enumerate(input):
-        t = threading.Thread(target=solve, args=(128, i, [el],))
+    for el in range(0,9):
+        t = threading.Thread(target=solve, args=(128, [el],))
         threadPool += [t]
         t.start()
-    print(len(threadPool))
     for t in threadPool:
-        print("joining")
         t.join()
 
-    print(len(temp_input))
-    input= temp_input
     temp_input = []
-    # print(input)
+    threadPool = []
+
+    for el in input:
+        t = threading.Thread(target=solve, args=(128, [el],))
+        threadPool += [t]
+        t.start()
+    
+    for t in threadPool:
+        t.join()
+
+
+    counts = defaultdict(int)
+    for el in temp_input:
+        counts[el] += 1
+    
+    result = 0
+    for k, v in counts.items():
+        print(perNo[k] * v)
+        result += perNo[k] * v
+
+
+    print(result)
+    return result
 
 def decrease(vec):
     return [x - 1 for x in vec]
@@ -67,7 +76,6 @@ def run():
     input = readInput()
     input = [int(x) for x in input[0].split(",")]
     res = solvethreads(input)
-    print(res)
     writeOutput(res)
 
 
