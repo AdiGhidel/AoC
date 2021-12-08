@@ -1,6 +1,3 @@
-mappingA = {2: 1, 4: 4, 3: 7, 7: 8}
-
-
 def readInput():
     vals = []
     with open('input.txt', 'r') as reader:
