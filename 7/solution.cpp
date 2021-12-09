@@ -1,26 +1,23 @@
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <vector>
 #include <algorithm>
-#include <filesystem>
-#include <string>
-#include <numeric>
 #include <cmath>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <numeric>
+#include <sstream>
+#include <string>
+#include <vector>
 
-int median(std::vector<int> v)
-{
+int median(std::vector<int> v) {
     size_t n = v.size() / 2;
     std::sort(v.begin(), v.end());
     return v[n];
 }
 
-int mean(std::vector<int> v)
-{
+int mean(std::vector<int> v) {
     size_t len = v.size();
     size_t sum = 0;
-    for (auto &el : v)
-    {
+    for (auto &el : v) {
         sum += el;
     }
     return sum / len;
@@ -30,8 +27,7 @@ std::vector<int> readFile() {
     std::vector<int> in;
     /* Read input */
 
-    if (!std::filesystem::exists("input.txt"))
-    {
+    if (!std::filesystem::exists("input.txt")) {
         std::cout << "input file does not exist" << std::endl;
         exit(1);
     }
@@ -40,8 +36,7 @@ std::vector<int> readFile() {
 
     /* Read data */
 
-    while (!input.eof())
-    {
+    while (!input.eof()) {
         int val;
         std::string line;
 
@@ -49,16 +44,14 @@ std::vector<int> readFile() {
         std::replace(line.begin(), line.end(), ',', ' ');
         std::istringstream linestream(line);
 
-        while (linestream >> val)
-        {
+        while (linestream >> val) {
             in.push_back(val);
         }
     }
     return in;
 }
 
-int main()
-{
+int main() {
     std::vector<int> crabs = {};
     long int sum = 0, m = 0;
 
@@ -68,8 +61,7 @@ int main()
     m = median(crabs);
     sum = 0;
 
-    for (auto c : crabs)
-    {
+    for (auto c : crabs) {
         sum += abs(c - m);
     }
 
@@ -79,8 +71,7 @@ int main()
     m = mean(crabs);
     sum = 0;
 
-    for (auto c : crabs)
-    {
+    for (auto c : crabs) {
         int cost = abs(c - m);
         sum += cost * (cost + 1) / 2;
     }
